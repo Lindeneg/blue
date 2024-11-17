@@ -28,7 +28,7 @@ type L struct {
 // New creates a new L struct and reads
 // the first character of the source
 func New(source []byte) *L {
-	l := &L{source: source, line: 1, col: 1}
+	l := &L{source: source, line: 1}
 	l.read()
 	return l
 }
@@ -42,8 +42,8 @@ func FromString(source string) *L {
 // NextToken returns the next token encountered in source
 // and advances to the next position as well
 func (l *L) NextToken() token.T {
-	tok := l.slimToken()
 	l.ignoreWhitespace()
+	tok := l.slimToken()
 	switch l.char {
 	case 0:
 		tok = l.token(token.EOF, "")
@@ -137,7 +137,9 @@ func (l *L) handleIdentifier(tok token.T) token.T {
 		tok.Type = token.Identifier(tok.Literal)
 		return tok
 	} else if isDigit(l.char) {
-		return l.token(token.INT, l.digit())
+		tok.Literal = string(l.digit())
+		tok.Type = token.INT
+		return tok
 	}
 	tok = l.token(token.UNKNOWN, l.char)
 	l.read()
@@ -175,7 +177,7 @@ func (l *L) tokenRange(tokenType token.Type, r int) token.T {
 // advances current and next indicies
 // and updates line and col ints
 func (l *L) read() {
-	if l.char == '\n' {
+	if l.char == '\n' || l.char == '\r' {
 		l.line += 1
 		l.col = 1
 	} else {

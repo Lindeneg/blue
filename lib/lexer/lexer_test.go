@@ -211,6 +211,74 @@ const obj = {"foo": "bar", "baz": 1};
 	}
 }
 
+func TestLineAndColToken(t *testing.T) {
+	input := `// test
+let
+def
+let x2 = x + 5
+`
+	tests := []struct {
+		expectedLine int
+		expectedCol  int
+	}{
+		{2, 1},
+		{3, 1},
+		{4, 1},
+		{4, 5},
+		{4, 8},
+		{4, 10},
+		{4, 12},
+		{4, 14},
+	}
+	l := FromString(input)
+	for i, tt := range tests {
+		tok := l.NextToken()
+		if tok.Line != tt.expectedLine {
+			t.Fatalf("tests[%d] - token.Line wrong. expected=%d, got=%v",
+				i, tt.expectedLine, tok.Line)
+		}
+		if tok.Col != tt.expectedCol {
+			t.Fatalf("tests[%d] - token.Col wrong. expected=%d, got=%v",
+				i, tt.expectedCol, tok.Col)
+		}
+	}
+}
+
+func TestScopedToken(t *testing.T) {
+	input := `
+let
+{
+    let
+    {
+        let
+    }
+    let
+}
+let
+`
+	tests := []struct {
+		expectedScope token.Scope
+	}{
+		{0},
+		{1},
+		{1},
+		{2},
+		{2},
+		{2},
+		{1},
+		{1},
+		{0},
+	}
+	l := FromString(input)
+	for i, tt := range tests {
+		tok := l.NextToken()
+		if tok.Scope != tt.expectedScope {
+			t.Fatalf("tests[%d] - token.Scope wrong. expected=%d, got=%v",
+				i, tt.expectedScope, tok.Scope)
+		}
+	}
+}
+
 func TestEmptyLexer(t *testing.T) {
 	input := "// comment"
 	l := FromString(input)
