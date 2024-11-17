@@ -10,6 +10,7 @@ func TestNextToken(t *testing.T) {
 	input := `let x = 5;
 let y = 10;
 const x2 = x + 5;
+const x3 = 42.89;
 
 def add(a, b) { return a + b; }
 
@@ -65,6 +66,12 @@ const obj = {"foo": "bar", "baz": 1};
 		{token.IDENTIFIER, "x"},
 		{token.PLUS, "+"},
 		{token.INT, "5"},
+		{token.SCOLON, ";"},
+
+		{token.CONST, "const"},
+		{token.IDENTIFIER, "x3"},
+		{token.ASSIGN, "="},
+		{token.FLOAT, "42.89"},
 		{token.SCOLON, ";"},
 
 		{token.DEF, "def"},
@@ -206,7 +213,7 @@ const obj = {"foo": "bar", "baz": 1};
 
 		if tok.Literal != tt.expectedLiteral {
 			t.Fatalf("tests[%d] - token.Literal wrong. expected=%q, got=%q",
-				i, tt.expectedLiteral, tok.Literal)
+				i, tt.expectedLiteral, tok)
 		}
 	}
 }
@@ -216,6 +223,7 @@ func TestLineAndColToken(t *testing.T) {
 let
 def
 let x2 = x + 5
+const x3 = 42.89
 `
 	tests := []struct {
 		expectedLine int
@@ -229,17 +237,21 @@ let x2 = x + 5
 		{4, 10},
 		{4, 12},
 		{4, 14},
+		{5, 1},
+		{5, 7},
+		{5, 10},
+		{5, 12},
 	}
 	l := FromString(input)
 	for i, tt := range tests {
 		tok := l.NextToken()
 		if tok.Line != tt.expectedLine {
 			t.Fatalf("tests[%d] - token.Line wrong. expected=%d, got=%v",
-				i, tt.expectedLine, tok.Line)
+				i, tt.expectedLine, tok)
 		}
 		if tok.Col != tt.expectedCol {
 			t.Fatalf("tests[%d] - token.Col wrong. expected=%d, got=%v",
-				i, tt.expectedCol, tok.Col)
+				i, tt.expectedCol, tok)
 		}
 	}
 }
@@ -274,7 +286,7 @@ let
 		tok := l.NextToken()
 		if tok.Scope != tt.expectedScope {
 			t.Fatalf("tests[%d] - token.Scope wrong. expected=%d, got=%v",
-				i, tt.expectedScope, tok.Scope)
+				i, tt.expectedScope, tok)
 		}
 	}
 }

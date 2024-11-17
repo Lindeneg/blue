@@ -7,7 +7,8 @@ const (
 	UNKNOWN    Type = iota // unknown token
 	EOF                    // end of file
 	IDENTIFIER             // x, y, foobar etc..
-	INT                    // 1, 2, 3
+	INT                    // 1, 2 etc..
+	FLOAT                  // 1.5, 2.3 etc..
 	STRING                 // "hello"
 	ASSIGN                 // =
 	PLUS                   // +

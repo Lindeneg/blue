@@ -1,5 +1,7 @@
 package token
 
+import "fmt"
+
 // Scope describes layers of nesting.
 // scope = 0 => global
 // scope >= 1 => local where the number describes layers of nesting
@@ -26,4 +28,9 @@ type T struct {
 	Line int
 	Col  int
 	Scope
+}
+
+func (t T) String() string {
+	return fmt.Sprintf("Type=%d|Literal=%q|Line=%d|Col=%d|Scope=%d",
+		t.Type, t.Literal, t.Line, t.Col, t.Scope)
 }

@@ -138,6 +138,13 @@ func (l *L) handleIdentifier(tok token.T) token.T {
 		return tok
 	} else if isDigit(l.char) {
 		tok.Literal = string(l.digit())
+		if l.char == '.' && isDigit(l.peek()) {
+			tok.Literal += string(l.char)
+			l.read()
+			tok.Literal += string(l.digit())
+			tok.Type = token.FLOAT
+			return tok
+		}
 		tok.Type = token.INT
 		return tok
 	}
