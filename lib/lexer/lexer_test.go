@@ -181,6 +181,21 @@ block-comment */
 		{token.STAR, "*"},
 		{token.INT, "1"},
 		{token.SCOLON, ";"},
+		{token.INT, "10"},
+		{token.NEQ, "!="},
+		{token.INT, "9"},
+		{token.SCOLON, ";"},
+		{token.INT, "10"},
+		{token.GTOE, ">="},
+		{token.INT, "9"},
+		{token.SCOLON, ";"},
+		{token.INT, "10"},
+		{token.LTOE, "<="},
+		{token.INT, "9"},
+		{token.SCOLON, ";"},
+		{token.STRING, "foobar"},
+		{token.STRING, "foo bar"},
+		{token.STRING, "foo 0 bar"},
 	}
 	l := New(input)
 	for i, tt := range tests {
