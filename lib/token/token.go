@@ -1,5 +1,20 @@
 package token
 
+// Scope describes layers of nesting.
+// scope = 0 => global
+// scope >= 1 => local where the number describes layers of nesting
+type Scope int
+
+// Global is scope global?
+func (s Scope) Global() bool {
+	return s == 0
+}
+
+// Local is scope local?
+func (s Scope) Local() bool {
+	return s > 0
+}
+
 // T describes a token encoutered during lexical analysis.
 type T struct {
 	// Type of token encountered
@@ -9,6 +24,6 @@ type T struct {
 	// TODO can probably be smarter about this
 	// Line the token was encountered at
 	Line int
-	// Column the token was encountered at
-	Col int
+	Col  int
+	Scope
 }

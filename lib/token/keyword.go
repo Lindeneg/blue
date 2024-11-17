@@ -4,7 +4,7 @@ package token
 // containing a keyword to that
 // keyword's appropiate token.Type
 var keywords = map[string]Type{
-	"def":    FUNCTION,
+	"def":    DEF,
 	"let":    LET,
 	"const":  CONST,
 	"true":   TRUE,
@@ -17,11 +17,11 @@ var keywords = map[string]Type{
 	"in":     IN,
 }
 
-// LookUpIdentifier checks if an
+// Identifier checks if an
 // identifier is a keyword. If it is
 // it returns that keyword's token.Type.
 // If not, it will return token.IDENTIFIER
-func LookUpIdentifier(ident string) Type {
+func Identifier(ident string) Type {
 	if tok, ok := keywords[ident]; ok {
 		return tok
 	}

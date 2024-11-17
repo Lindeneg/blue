@@ -32,7 +32,7 @@ const (
 	RBRACE                 // }
 	LBRACKET               // [
 	RBRACKET               // ]
-	FUNCTION               // function keyword
+	DEF                    // def keyword
 	LET                    // let keyword
 	CONST                  // const keyword
 	TRUE                   // true keyword
