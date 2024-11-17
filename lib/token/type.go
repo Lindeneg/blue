@@ -42,5 +42,4 @@ const (
 	ELSE                   // else keyword
 	RETURN                 // return keyword
 	FOR                    // for keyword
-	IN                     // in keyword
 )
