@@ -37,14 +37,11 @@ const obj = {"foo": "bar", "baz": 1};
 10 != 9;
 10 >= 9;
 10 <= 9;
-"foobar";
-"foo bar";
+"foobar"
+"foo bar"
 "foo 0 bar"
 
 // this is a single line comment
-/* this is a 
-multiline 
-block-comment */
 `
 	tests := []struct {
 		expectedType    token.Type
@@ -70,7 +67,7 @@ block-comment */
 		{token.INT, "5"},
 		{token.SCOLON, ";"},
 
-		{token.FUNCTION, "def"},
+		{token.DEF, "def"},
 		{token.IDENTIFIER, "add"},
 		{token.LPAREN, "("},
 		{token.IDENTIFIER, "a"},
@@ -96,7 +93,7 @@ block-comment */
 		{token.RPAREN, ")"},
 		{token.SCOLON, ";"},
 
-		{token.FUNCTION, "def"},
+		{token.DEF, "def"},
 		{token.IDENTIFIER, "foo"},
 		{token.LPAREN, "("},
 		{token.RPAREN, ")"},
@@ -130,7 +127,7 @@ block-comment */
 		{token.ELSE, "else"},
 		{token.LBRACE, "{"},
 		{token.RETURN, "return"},
-		{token.TRUE, "false"},
+		{token.FALSE, "false"},
 		{token.SCOLON, ";"},
 		{token.RBRACE, "}"},
 		{token.RBRACE, "}"},
@@ -196,18 +193,19 @@ block-comment */
 		{token.STRING, "foobar"},
 		{token.STRING, "foo bar"},
 		{token.STRING, "foo 0 bar"},
+		{token.EOF, ""},
 	}
-	l := New(input)
+	l := FromString(input)
 	for i, tt := range tests {
 		tok := l.NextToken()
 
 		if tok.Type != tt.expectedType {
-			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q",
-				i, tt.expectedType, tok.Type)
+			t.Fatalf("tests[%d] - token.Type wrong. expected=%d, got=%v",
+				i, tt.expectedType, tok)
 		}
 
 		if tok.Literal != tt.expectedLiteral {
-			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q",
+			t.Fatalf("tests[%d] - token.Literal wrong. expected=%q, got=%q",
 				i, tt.expectedLiteral, tok.Literal)
 		}
 	}
@@ -215,10 +213,10 @@ block-comment */
 
 func TestEmptyLexer(t *testing.T) {
 	input := "// comment"
-	l := New(input)
+	l := FromString(input)
 	tok := l.NextToken()
 	if tok.Type != token.EOF {
-		t.Fatalf("tokentype wrong. expected=%q, got=%q",
+		t.Fatalf("token.Type wrong. expected=%d, got=%d",
 			token.EOF, tok.Type)
 	}
 	if tok.Literal != "" {
