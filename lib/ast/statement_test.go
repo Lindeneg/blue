@@ -7,6 +7,9 @@ import (
 )
 
 func TestStatements(t *testing.T) {
+	expectedOutput := "let foo = bar;const foo = bar;" +
+		"{ const foo = bar; }" +
+		"return foo;foo"
 	program := &Program{
 		Statements: []Statement{
 			&LetStatement{
@@ -63,11 +66,8 @@ func TestStatements(t *testing.T) {
 			},
 		},
 	}
-	expected := "let foo = bar;const foo = bar;" +
-		"{ const foo = bar; }" +
-		"return foo;foo"
 
-	if program.String() != expected {
-		t.Errorf("program.String() wrong. got=%q, want=%q", program.String(), expected)
+	if program.String() != expectedOutput {
+		t.Errorf("program.String() wrong.\ngot =%q\nwant=%q", program.String(), expectedOutput)
 	}
 }

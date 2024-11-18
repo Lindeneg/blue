@@ -8,11 +8,13 @@ import (
 
 func TestExpressions(t *testing.T) {
 	expectedOutput := "(1 + 2.55)" +
-		"if ((!x) && (foo < bar)) { return 1; }" +
+		"if ((!x) && (foo < bar)) { return false; }" +
 		"elif ((!z) || (z > 10)) { return 2; }" +
-		"elif done { return 3; }" +
+		`elif done { return "done"; }` +
 		"else { return 4; }" +
-		"for let i = range(arr);{ (arr[i]) }"
+		"for let i = range(arr);{ (arr[i]) }" +
+		`["foo", "bar"]` +
+		`{"foo":"bar", "baz":"qux"}`
 	program := &Program{
 		Statements: []Statement{
 			&ExpressionStatement{
@@ -46,9 +48,9 @@ func TestExpressions(t *testing.T) {
 							Statements: []Statement{
 								&ReturnStatement{
 									Token: token.T{Type: token.RETURN, Literal: "return"},
-									ReturnValue: &Number{
-										Token: token.T{Type: token.INT, Literal: "1"},
-										Value: 1,
+									ReturnValue: &Boolean{
+										Token: token.T{Type: token.FALSE, Literal: "false"},
+										Value: false,
 									},
 								},
 							},
@@ -89,9 +91,9 @@ func TestExpressions(t *testing.T) {
 								Statements: []Statement{
 									&ReturnStatement{
 										Token: token.T{Type: token.RETURN, Literal: "return"},
-										ReturnValue: &Number{
-											Token: token.T{Type: token.INT, Literal: "3"},
-											Value: 3,
+										ReturnValue: &String{
+											Token: token.T{Type: token.STRING, Literal: "done"},
+											Value: "done",
 										},
 									},
 								},
@@ -135,6 +137,22 @@ func TestExpressions(t *testing.T) {
 								},
 							},
 						},
+					},
+				},
+			},
+			&ExpressionStatement{
+				Expression: &Array{
+					Elements: []Expression{
+						&String{Value: "foo"},
+						&String{Value: "bar"},
+					},
+				},
+			},
+			&ExpressionStatement{
+				Expression: &Dict{
+					Pairs: map[Expression]Expression{
+						&String{Value: "foo"}: &String{Value: "bar"},
+						&String{Value: "baz"}: &String{Value: "qux"},
 					},
 				},
 			},
