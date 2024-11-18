@@ -3,7 +3,7 @@ package lexer
 import (
 	"testing"
 
-	"github.com/lindeneg/blue/lib/token"
+	"github.com/lindeneg/blue/lang/token"
 )
 
 func TestNextToken(t *testing.T) {

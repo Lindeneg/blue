@@ -1,2 +1,2 @@
 test:
-	go test ./lib/*
+	go test ./lang/*

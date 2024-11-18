@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/lindeneg/blue/lib/token"
+	"github.com/lindeneg/blue/lang/token"
 )
 
 // Node must be implemented

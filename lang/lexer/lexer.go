@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/lindeneg/blue/lib/token"
+	"github.com/lindeneg/blue/lang/token"
 )
 
 // L is responsible for lexical analysis.

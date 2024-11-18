@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/lindeneg/blue/lib/token"
+	"github.com/lindeneg/blue/lang/token"
 )
 
 // Expression node

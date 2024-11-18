@@ -3,7 +3,7 @@ package ast
 import (
 	"bytes"
 
-	"github.com/lindeneg/blue/lib/token"
+	"github.com/lindeneg/blue/lang/token"
 )
 
 // Statement node
