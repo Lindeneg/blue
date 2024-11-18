@@ -48,7 +48,9 @@ type String struct {
 
 func (sl *String) expression()     {}
 func (sl *String) Literal() string { return sl.Token.Literal }
-func (sl *String) String() string  { return sl.Token.Literal }
+func (sl *String) String() string {
+	return fmt.Sprintf("\"%s\"", sl.Value)
+}
 
 // Boolean i.e true, false
 type Boolean struct {
