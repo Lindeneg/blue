@@ -64,7 +64,7 @@ func TestStatements(t *testing.T) {
 		},
 	}
 	expected := "let foo = bar;const foo = bar;" +
-		"{const foo = bar;}" +
+		"{ const foo = bar; }" +
 		"return foo;foo"
 
 	if program.String() != expected {

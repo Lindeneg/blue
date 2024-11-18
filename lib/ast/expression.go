@@ -83,11 +83,11 @@ type IfExpression struct {
 	Else  *BlockStatement
 }
 
-func (ie *IfExpression) expressionNode()      {}
-func (ie *IfExpression) TokenLiteral() string { return ie.Token.Literal }
+func (ie *IfExpression) expression()     {}
+func (ie *IfExpression) Literal() string { return ie.Token.Literal }
 func (ie *IfExpression) String() string {
 	var out bytes.Buffer
-	out.WriteString("if")
+	out.WriteString("if ")
 	out.WriteString(ie.If.Condition.String())
 	out.WriteString(" ")
 	out.WriteString(ie.If.Body.String())
@@ -111,8 +111,8 @@ type ForExpression struct {
 	Body       *BlockStatement
 }
 
-func (fe *ForExpression) expressionNode()      {}
-func (fe *ForExpression) TokenLiteral() string { return fe.Token.Literal }
+func (fe *ForExpression) expression()     {}
+func (fe *ForExpression) Literal() string { return fe.Token.Literal }
 func (fe *ForExpression) String() string {
 	var out bytes.Buffer
 	out.WriteString("for ")
@@ -128,17 +128,22 @@ type CallExpression struct {
 	Arguments []Expression
 }
 
-func (ce *CallExpression) expressionNode()      {}
-func (ce *CallExpression) TokenLiteral() string { return ce.Token.Literal }
+func (ce *CallExpression) expression()     {}
+func (ce *CallExpression) Literal() string { return ce.Token.Literal }
 func (ce *CallExpression) String() string {
-	var out bytes.Buffer
-	args := []string{}
-	for _, a := range ce.Arguments {
-		args = append(args, a.String())
+	switch f := ce.Function.(type) {
+	case *Function:
+		var out bytes.Buffer
+		args := []string{}
+		for _, a := range ce.Arguments {
+			args = append(args, a.String())
+		}
+		out.WriteString(f.Name.Value)
+		out.WriteString("(")
+		out.WriteString(strings.Join(args, ", "))
+		out.WriteString(")")
+		return out.String()
+	default:
+		return ""
 	}
-	out.WriteString(ce.Function.String())
-	out.WriteString("(")
-	out.WriteString(strings.Join(args, ", "))
-	out.WriteString(")")
-	return out.String()
 }

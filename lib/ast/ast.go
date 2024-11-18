@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 
 	"github.com/lindeneg/blue/lib/token"
@@ -32,7 +33,12 @@ type Number struct {
 
 func (i *Number) expression()     {}
 func (i *Number) Literal() string { return i.Token.Literal }
-func (i *Number) String() string  { return i.Token.Literal }
+func (i *Number) String() string {
+	if i.Token.Type == token.INT {
+		return fmt.Sprintf("%d", int(i.Value))
+	}
+	return fmt.Sprintf("%.2f", i.Value)
+}
 
 // String i.e "foobar"
 type String struct {
