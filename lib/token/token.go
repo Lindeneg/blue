@@ -26,7 +26,9 @@ type T struct {
 	// TODO can probably be smarter about this
 	// Line the token was encountered at
 	Line int
-	Col  int
+	// Column the token starts at
+	Col int
+	// scope level (0 global)
 	Scope
 }
 
