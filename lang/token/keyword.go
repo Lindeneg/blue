@@ -14,6 +14,7 @@ var keywords = map[string]Type{
 	"else":   ELSE,
 	"return": RETURN,
 	"for":    FOR,
+	"null":   NULL,
 }
 
 // Identifier checks if an

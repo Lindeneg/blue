@@ -41,6 +41,7 @@ const obj = {"foo": "bar", "baz": 1};
 "foobar"
 "foo bar"
 "foo 0 bar"
+null
 
 // this is a single line comment
 `
@@ -200,6 +201,7 @@ const obj = {"foo": "bar", "baz": 1};
 		{token.STRING, "foobar"},
 		{token.STRING, "foo bar"},
 		{token.STRING, "foo 0 bar"},
+		{token.NULL, "null"},
 		{token.EOF, ""},
 	}
 	l := FromString(input)

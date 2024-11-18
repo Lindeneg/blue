@@ -9,7 +9,7 @@ import (
 func TestExpressions(t *testing.T) {
 	expectedOutput := "(1 + 2.55)" +
 		"if ((!x) && (foo < bar)) { return false; }" +
-		"elif ((!z) || (z > 10)) { return 2; }" +
+		"elif ((!z) || (z > 10)) { return null; }" +
 		`elif done { return "done"; }` +
 		"else { return 4; }" +
 		"for let i = range(arr);{ (arr[i]) }" +
@@ -76,11 +76,8 @@ func TestExpressions(t *testing.T) {
 							Body: &BlockStatement{
 								Statements: []Statement{
 									&ReturnStatement{
-										Token: token.T{Type: token.RETURN, Literal: "return"},
-										ReturnValue: &Number{
-											Token: token.T{Type: token.INT, Literal: "2"},
-											Value: 2,
-										},
+										Token:       token.T{Type: token.RETURN, Literal: "return"},
+										ReturnValue: &Null{},
 									},
 								},
 							},

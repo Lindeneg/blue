@@ -49,7 +49,7 @@ type String struct {
 func (sl *String) expression()     {}
 func (sl *String) Literal() string { return sl.Token.Literal }
 func (sl *String) String() string {
-	return fmt.Sprintf("\"%s\"", sl.Value)
+	return fmt.Sprintf("%q", sl.Value)
 }
 
 // Boolean i.e true, false
@@ -127,4 +127,15 @@ func (d *Dict) String() string {
 	out.WriteString(strings.Join(pairs, ", "))
 	out.WriteString("}")
 	return out.String()
+}
+
+// Null i.e null
+type Null struct {
+	Token token.T
+}
+
+func (i *Null) expression()     {}
+func (i *Null) Literal() string { return "null" }
+func (i *Null) String() string {
+	return i.Literal()
 }

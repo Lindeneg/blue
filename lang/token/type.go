@@ -43,4 +43,5 @@ const (
 	ELSE                   // else keyword
 	RETURN                 // return keyword
 	FOR                    // for keyword
+	NULL                   // null keyword
 )
