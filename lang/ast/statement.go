@@ -19,25 +19,29 @@ type LetStatement struct {
 	Value Expression
 }
 
-func (ls *LetStatement) statement()        {}
-func (ls *LetStatement) Literal() string   { return ls.Token.Literal }
-func (ls *LetStatement) Left() *Identifier { return ls.Name }
-func (ls *LetStatement) Right() Expression { return ls.Value }
+func (ls *LetStatement) statement()            {}
+func (ls *LetStatement) Literal() string       { return ls.Token.Literal }
+func (ls *LetStatement) Left() *Identifier     { return ls.Name }
+func (ls *LetStatement) Right() Expression     { return ls.Value }
+func (ls *LetStatement) SetLeft(i *Identifier) { ls.Name = i }
+func (ls *LetStatement) SetRight(e Expression) { ls.Value = e }
 func (ls *LetStatement) String() string {
 	return assignString(ls)
 }
 
-// LetStatement i.e const foo = 5;
+// ConstStatement i.e const foo = 5;
 type ConstStatement struct {
 	Token token.T
 	Name  *Identifier
 	Value Expression
 }
 
-func (cs *ConstStatement) statement()        {}
-func (cs *ConstStatement) Literal() string   { return cs.Token.Literal }
-func (cs *ConstStatement) Left() *Identifier { return cs.Name }
-func (cs *ConstStatement) Right() Expression { return cs.Value }
+func (cs *ConstStatement) statement()            {}
+func (cs *ConstStatement) Literal() string       { return cs.Token.Literal }
+func (cs *ConstStatement) Left() *Identifier     { return cs.Name }
+func (cs *ConstStatement) Right() Expression     { return cs.Value }
+func (cs *ConstStatement) SetLeft(i *Identifier) { cs.Name = i }
+func (cs *ConstStatement) SetRight(e Expression) { cs.Value = e }
 func (cs *ConstStatement) String() string {
 	return assignString(cs)
 }
@@ -66,9 +70,9 @@ type ReturnStatement struct {
 	ReturnValue Expression
 }
 
-func (returnStatement *ReturnStatement) statement() {}
-func (returnStatement *ReturnStatement) Literal() string {
-	return returnStatement.Token.Literal
+func (rs *ReturnStatement) statement() {}
+func (rs *ReturnStatement) Literal() string {
+	return rs.Token.Literal
 }
 func (rs *ReturnStatement) String() string {
 	var out bytes.Buffer
@@ -88,7 +92,7 @@ type ExpressionStatement struct {
 }
 
 func (es *ExpressionStatement) statement()      {}
-func (es *ExpressionStatement) Literal() string { return string(es.Token.Literal) }
+func (es *ExpressionStatement) Literal() string { return es.Token.Literal }
 func (es *ExpressionStatement) String() string {
 	if es.Expression != nil {
 		return es.Expression.String()
@@ -96,13 +100,15 @@ func (es *ExpressionStatement) String() string {
 	return ""
 }
 
-type assignable interface {
+type Assignable interface {
 	Node
 	Left() *Identifier
 	Right() Expression
+	SetLeft(*Identifier)
+	SetRight(Expression)
 }
 
-func assignString(a assignable) string {
+func assignString(a Assignable) string {
 	var out bytes.Buffer
 	out.WriteString(a.Literal() + " ")
 	out.WriteString(a.Left().String())

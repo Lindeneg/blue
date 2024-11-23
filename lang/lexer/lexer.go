@@ -203,7 +203,7 @@ func (l *L) tokenRange(tokenType token.Type, r int) token.T {
 }
 
 // read reads the next character,
-// advances current and next indicies
+// advances current and next indices
 // and updates line and col ints
 func (l *L) read() {
 	if l.char == '\n' {

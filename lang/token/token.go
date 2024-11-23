@@ -8,8 +8,8 @@ import (
 type Color string
 
 const (
-	COLOR_RED   Color = "\033[31m"
-	COLOR_RESET Color = "\033[0m"
+	ColorRed   Color = "\033[31m"
+	ColorReset Color = "\033[0m"
 )
 
 // Scope describes layers of nesting.
@@ -27,7 +27,7 @@ func (s Scope) Local() bool {
 	return s > 0
 }
 
-// T describes a token encoutered during lexical analysis.
+// T describes a token encountered during lexical analysis.
 type T struct {
 	// Type of token encountered
 	Type
@@ -42,21 +42,25 @@ type T struct {
 	Scope
 }
 
+// String returns full context of token
 func (t T) String() string {
 	return fmt.Sprintf("Type=%d|Literal=%q|Line=%d|Col=%d|Scope=%d",
 		t.Type, t.Literal, t.Line, t.Col, t.Scope)
 }
 
+// Highlight returns a string that contains m,
+// with t being colored by color
 func (t T) Highlight(m string, color Color) string {
 	if m == "" {
 		return m
 	}
 	errorTokenEscaped := strings.ReplaceAll(t.Literal, "\n", "\\n")
 	errorTokenEscaped = strings.ReplaceAll(errorTokenEscaped, "\t", "\\t")
-	coloredToken := fmt.Sprintf("%s%s%s", color, errorTokenEscaped, COLOR_RESET)
+	coloredToken := fmt.Sprintf("%s%s%s", color, errorTokenEscaped, ColorReset)
 	return strings.Replace(m, t.Literal, coloredToken, 1)
 }
 
+// HighlightErr calls Highlight with ColorRed
 func (t T) HighlightErr(m string) string {
-	return t.Highlight(m, COLOR_RED)
+	return t.Highlight(m, ColorRed)
 }

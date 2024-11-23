@@ -2,7 +2,7 @@ package token
 
 // keywords maps a literal string
 // containing a keyword to that
-// keyword's appropiate token.Type
+// keyword's appropriate token.Type
 var keywords = map[string]Type{
 	"def":    DEF,
 	"let":    LET,

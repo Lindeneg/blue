@@ -74,7 +74,7 @@ func (al *Array) expression()     {}
 func (al *Array) Literal() string { return al.Token.Literal }
 func (al *Array) String() string {
 	var out bytes.Buffer
-	elements := []string{}
+	var elements []string
 	for _, el := range al.Elements {
 		elements = append(elements, el.String())
 	}
@@ -96,7 +96,7 @@ func (fl *Function) expression()     {}
 func (fl *Function) Literal() string { return fl.Token.Literal }
 func (fl *Function) String() string {
 	var out bytes.Buffer
-	params := []string{}
+	var params []string
 	for _, p := range fl.Parameters {
 		params = append(params, p.String())
 	}
@@ -119,7 +119,7 @@ func (d *Dict) expression()     {}
 func (d *Dict) Literal() string { return d.Token.Literal }
 func (d *Dict) String() string {
 	var out bytes.Buffer
-	pairs := []string{}
+	var pairs []string
 	for key, value := range d.Pairs {
 		pairs = append(pairs, key.String()+":"+value.String())
 	}

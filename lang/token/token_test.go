@@ -9,7 +9,7 @@ func TestHighlight(t *testing.T) {
 		expected string
 	}{
 		{"foo", "let x != foo5\x1b[0m;"},
-		{string(COLOR_RED), "let x != \x1b[31m5\x1b[0m;"},
+		{string(ColorRed), "let x != \x1b[31m5\x1b[0m;"},
 	}
 	for _, tt := range tests {
 		tok := T{

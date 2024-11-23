@@ -134,7 +134,7 @@ func (ce *CallExpression) String() string {
 	switch f := ce.Function.(type) {
 	case *Function:
 		var out bytes.Buffer
-		args := []string{}
+		var args []string
 		for _, a := range ce.Arguments {
 			args = append(args, a.String())
 		}
