@@ -1,9 +1,7 @@
 package lexer
 
 import (
-	"fmt"
-	"log"
-
+	"github.com/lindeneg/blue/lang/assert"
 	"github.com/lindeneg/blue/lang/token"
 )
 
@@ -46,10 +44,8 @@ func (l *L) NextToken() token.T {
 	tok := l.slimToken()
 	switch l.char {
 	case 0:
+		assert.A(!l.scope.Global(), "EOF found but scope is '%d'\n", l.scope)
 		tok = l.token(token.EOF, "")
-		if !l.scope.Global() {
-			fmt.Printf("warning: EOF found but scope is '%d'\n", l.scope)
-		}
 		return tok
 	case '=':
 		if l.peek() == '=' {
@@ -130,6 +126,32 @@ func (l *L) NextToken() token.T {
 	return tok
 }
 
+// Line returns the given line as a string
+func (l *L) Line(line int) string {
+	li := 1
+	start := -1
+	end := -1
+	for i, b := range l.source {
+		if li == line && start == -1 {
+			start = i
+		}
+		if b == '\n' {
+			if start > -1 {
+				end = i
+				break
+			}
+			li += 1
+		}
+	}
+	if start < 0 {
+		return ""
+	}
+	if end < 0 {
+		return string(l.source[start:])
+	}
+	return string(l.source[start:end])
+}
+
 // handleIdentifier reads an identifier or a literal
 func (l *L) handleIdentifier(tok token.T) token.T {
 	if isIdentifierStart(l.char) {
@@ -184,7 +206,7 @@ func (l *L) tokenRange(tokenType token.Type, r int) token.T {
 // advances current and next indicies
 // and updates line and col ints
 func (l *L) read() {
-	if l.char == '\n' || l.char == '\r' {
+	if l.char == '\n' {
 		l.line += 1
 		l.col = 1
 	} else {
@@ -250,7 +272,7 @@ func (l *L) token(t token.Type, lt any) token.T {
 	case byte:
 		lts = string(lt)
 	default:
-		log.Fatalf("token %d's literal '%v' could not be converted to string", t, lt)
+		assert.VerifyNotReached()
 	}
 	return token.T{Type: t, Literal: lts, Line: l.line, Col: l.col, Scope: l.scope}
 }

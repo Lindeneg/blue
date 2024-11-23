@@ -293,6 +293,33 @@ let
 	}
 }
 
+func TestLexerLine(t *testing.T) {
+	input := `let x = 5;
+let y = 10;
+const x2 = x + 5;
+const x3 = 42.89;
+`
+	tests := []struct {
+		line int
+		want string
+	}{
+		{1, "let x = 5;"},
+		{3, "const x2 = x + 5;"},
+		{4, "const x3 = 42.89;"},
+		{-1, ""},
+		{0, ""},
+	}
+
+	for _, tt := range tests {
+		l := FromString(input)
+		got := l.Line(tt.line)
+		if got != tt.want {
+			t.Fatalf("line wrong\nwant=%q\ngot=%q",
+				tt.want, got)
+		}
+	}
+}
+
 func TestEmptyLexer(t *testing.T) {
 	input := "// comment"
 	l := FromString(input)
