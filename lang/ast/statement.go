@@ -101,7 +101,7 @@ func (es *ExpressionStatement) String() string {
 }
 
 type Assignable interface {
-	Node
+	Statement
 	Left() *Identifier
 	Right() Expression
 	SetLeft(*Identifier)
