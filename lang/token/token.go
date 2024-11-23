@@ -1,6 +1,16 @@
 package token
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
+
+type Color string
+
+const (
+	COLOR_RED   Color = "\033[31m"
+	COLOR_RESET Color = "\033[0m"
+)
 
 // Scope describes layers of nesting.
 // scope = 0 => global
@@ -35,4 +45,18 @@ type T struct {
 func (t T) String() string {
 	return fmt.Sprintf("Type=%d|Literal=%q|Line=%d|Col=%d|Scope=%d",
 		t.Type, t.Literal, t.Line, t.Col, t.Scope)
+}
+
+func (t T) Highlight(m string, color Color) string {
+	if m == "" {
+		return m
+	}
+	errorTokenEscaped := strings.ReplaceAll(t.Literal, "\n", "\\n")
+	errorTokenEscaped = strings.ReplaceAll(errorTokenEscaped, "\t", "\\t")
+	coloredToken := fmt.Sprintf("%s%s%s", color, errorTokenEscaped, COLOR_RESET)
+	return strings.Replace(m, t.Literal, coloredToken, 1)
+}
+
+func (t T) HighlightErr(m string) string {
+	return t.Highlight(m, COLOR_RED)
 }
