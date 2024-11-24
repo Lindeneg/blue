@@ -16,6 +16,9 @@ type P struct {
 
 	sourceName string
 
+	prefixMap prefixMap
+	infixMap  infixMap
+
 	errs []ParseErr
 }
 
@@ -26,6 +29,8 @@ func New(l *lexer.L, sourceName string) *P {
 		sourceName: sourceName,
 		errs:       make([]ParseErr, 0),
 	}
+	p.prefixMap = makePrefixMap(p)
+	p.infixMap = makeInfixMap(p)
 	// initialize cur and next tokens
 	p.advance()
 	p.advance()
@@ -85,7 +90,7 @@ func (p *P) expectNext(t token.Type) bool {
 // expectPrefix returns the prefix function for the current token
 // or sets an error if the prefix function does not exist
 func (p *P) expectPrefix() prefixFn {
-	prefix, ok := prefixMap[p.cur.Type]
+	prefix, ok := p.prefixMap[p.cur.Type]
 	if !ok {
 		parseFnErr(p, "prefix", p.cur)
 		return nil
@@ -96,7 +101,7 @@ func (p *P) expectPrefix() prefixFn {
 // expectInfix returns the infix function for the next token
 // or sets an error if the infix function does not exist
 func (p *P) expectInfix() infixFn {
-	infix, ok := infixMap[p.next.Type]
+	infix, ok := p.infixMap[p.next.Type]
 	if !ok {
 		parseFnErr(p, "infix", p.next)
 		return nil
@@ -150,17 +155,18 @@ func (p *P) parseExpression(pr pred) ast.Expression {
 	if prefix = p.expectPrefix(); prefix == nil {
 		return nil
 	}
-	leftExp := prefix(p) // consume lhs
+	leftExp := prefix() // consume lhs
 	for p.next.Type != token.SCOLON && pr.lt(p.next) {
 		if infix = p.expectInfix(); infix == nil {
-			return nil
+			return leftExp
 		}
-		p.advance()                 // consume infix token
-		leftExp = infix(p, leftExp) // consume rhs
+		p.advance()              // consume infix token
+		leftExp = infix(leftExp) // consume rhs
 	}
 	return leftExp
 }
 
+// parseExpressionStatement parses an expression statement
 func (p *P) parseExpressionStatement() *ast.ExpressionStatement {
 	stmt := &ast.ExpressionStatement{Token: p.cur}
 	stmt.Expression = p.parseExpression(LOWEST)

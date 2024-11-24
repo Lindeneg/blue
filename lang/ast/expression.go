@@ -131,19 +131,19 @@ type CallExpression struct {
 func (ce *CallExpression) expression()     {}
 func (ce *CallExpression) Literal() string { return ce.Token.Literal }
 func (ce *CallExpression) String() string {
+	var out bytes.Buffer
+	var args []string
+	for _, a := range ce.Arguments {
+		args = append(args, a.String())
+	}
 	switch f := ce.Function.(type) {
 	case *Function:
-		var out bytes.Buffer
-		var args []string
-		for _, a := range ce.Arguments {
-			args = append(args, a.String())
-		}
 		out.WriteString(f.Name.Value)
-		out.WriteString("(")
-		out.WriteString(strings.Join(args, ", "))
-		out.WriteString(")")
-		return out.String()
 	default:
-		return ""
+		out.WriteString(ce.Function.String())
 	}
+	out.WriteString("(")
+	out.WriteString(strings.Join(args, ", "))
+	out.WriteString(")")
+	return out.String()
 }
