@@ -23,7 +23,6 @@ const (
 	COLON                  // :
 	SCOLON                 // ;
 	COMMA                  // ,
-	PIPE                   // |
 	LT                     // <
 	GT                     // >
 	EQ                     // ==
@@ -38,7 +37,7 @@ const (
 	RBRACE                 // }
 	LBRACKET               // [
 	RBRACKET               // ]
-	DEF                    // def keyword
+	FN                     // fn keyword
 	LET                    // let keyword
 	CONST                  // const keyword
 	TRUE                   // true keyword
@@ -67,7 +66,6 @@ var name = map[Type]string{
 	COLON:      ":",
 	SCOLON:     ";",
 	COMMA:      ",",
-	PIPE:       "|",
 	LT:         "<",
 	GT:         ">",
 	EQ:         "==",
@@ -82,7 +80,7 @@ var name = map[Type]string{
 	RBRACE:     "}",
 	LBRACKET:   "[",
 	RBRACKET:   "]",
-	DEF:        "DEF",
+	FN:         "FN",
 	LET:        "LET",
 	CONST:      "CONST",
 	TRUE:       "TRUE",

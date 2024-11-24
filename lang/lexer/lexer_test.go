@@ -12,11 +12,11 @@ let y = 10;
 const x2 = x + 5;
 const x3 = 42.89;
 
-def add(a, b) { return a + b; }
+fn add(a, b) { return a + b; }
 
 const result = add(x, y);
 
-def foo() {
+fn foo() {
     if x > y && result < 10 {
         return true;
     } elif x2 > y || result == 15 {
@@ -32,7 +32,7 @@ for let i = range(arr) {
     arr[i];
 }
 
-const obj = |"foo": "bar", "baz": 1|;
+const obj = {"foo": "bar", "baz": 1};
 
 !-/*1;
 10 != 9;
@@ -75,7 +75,7 @@ null
 		{token.FLOAT, "42.89"},
 		{token.SCOLON, ";"},
 
-		{token.DEF, "def"},
+		{token.FN, "fn"},
 		{token.IDENTIFIER, "add"},
 		{token.LPAREN, "("},
 		{token.IDENTIFIER, "a"},
@@ -101,7 +101,7 @@ null
 		{token.RPAREN, ")"},
 		{token.SCOLON, ";"},
 
-		{token.DEF, "def"},
+		{token.FN, "fn"},
 		{token.IDENTIFIER, "foo"},
 		{token.LPAREN, "("},
 		{token.RPAREN, ")"},
@@ -169,7 +169,7 @@ null
 		{token.CONST, "const"},
 		{token.IDENTIFIER, "obj"},
 		{token.ASSIGN, "="},
-		{token.PIPE, "|"},
+		{token.LBRACE, "{"},
 		{token.STRING, "foo"},
 		{token.COLON, ":"},
 		{token.STRING, "bar"},
@@ -177,7 +177,7 @@ null
 		{token.STRING, "baz"},
 		{token.COLON, ":"},
 		{token.INT, "1"},
-		{token.PIPE, "|"},
+		{token.RBRACE, "}"},
 		{token.SCOLON, ";"},
 
 		{token.BANG, "!"},

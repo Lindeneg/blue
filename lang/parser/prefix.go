@@ -23,9 +23,9 @@ func makePrefixMap(p *P) prefixMap {
 
 		token.LPAREN:   p.parseGroupedExpression,
 		token.LBRACKET: p.parseArrayLiteral,
+		token.FN:       p.parseFunctionLiteral,
 		//		token.LBRACE:   p.parseHashLiteral,
 		//		token.IF:       p.parseIfExpression,
-		//		token.DEF:      p.parseFunctionLiteral,
 		//		token.FOR:      p.parseForExpression,
 	}
 
@@ -97,4 +97,53 @@ func (p *P) parseExpressionList(end token.Type) []ast.Expression {
 	}
 	p.advance() // consume ']'
 	return list
+}
+
+func (p *P) parseFunctionLiteral() ast.Expression {
+	fn := &ast.Function{Token: p.cur}
+	p.advance() // consume 'identifier'
+	if !p.expectCur(token.LPAREN) {
+		return nil
+	}
+	fn.Parameters = p.parseFunctionParameters()
+	if !p.expectNext(token.LBRACE) {
+		return nil
+	}
+	p.advance() // consume '{'
+	fn.Body = p.parseBlockStatement()
+	return fn
+}
+
+func (p *P) parseFunctionParameters() []*ast.Identifier {
+	var params []*ast.Identifier
+	if p.next.Type == token.RPAREN {
+		p.advance() // consume ')'
+		return params
+	}
+	p.advance() // consume '('
+	params = append(params, &ast.Identifier{Token: p.cur, Value: p.cur.Literal})
+	for p.next.Type == token.COMMA {
+		p.advance() // consume ','
+		p.advance() // consume next parameter
+		params = append(params, &ast.Identifier{Token: p.cur, Value: p.cur.Literal})
+	}
+	if !p.expectNext(token.RPAREN) {
+		return nil
+	}
+	p.advance() // consume ')'
+	return params
+}
+
+func (p *P) parseBlockStatement() *ast.BlockStatement {
+	block := &ast.BlockStatement{Token: p.cur}
+	block.Statements = []ast.Statement{}
+	p.advance() // consume 'identifier'
+	for p.cur.Type != token.RBRACE && p.cur.Type != token.EOF {
+		stmt := p.parseStatement()
+		if stmt != nil {
+			block.Statements = append(block.Statements, stmt)
+		}
+		p.advance() // consume statement
+	}
+	return block
 }

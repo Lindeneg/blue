@@ -4,7 +4,7 @@ package token
 // containing a keyword to that
 // keyword's appropriate token.Type
 var keywords = map[string]Type{
-	"def":    DEF,
+	"fn":     FN,
 	"let":    LET,
 	"const":  CONST,
 	"true":   TRUE,

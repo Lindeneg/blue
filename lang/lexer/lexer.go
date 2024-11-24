@@ -75,7 +75,7 @@ func (l *L) NextToken() token.T {
 		if l.peek() == '|' {
 			tok = l.tokenRange(token.OR, 1)
 		} else {
-			tok = l.token(token.PIPE, l.char)
+			tok = l.token(token.UNKNOWN, l.char)
 		}
 	case '&':
 		if l.peek() == '&' {
