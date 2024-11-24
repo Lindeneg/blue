@@ -22,14 +22,14 @@ func newParseErr(p *P, t token.T, msg string, args ...any) ParseErr {
 	return ParseErr{T: t, Msg: m, Line: l}
 }
 
-func err(p *P, t token.T, msg string, args ...any) {
+func perr(p *P, t token.T, msg string, args ...any) {
 	p.errs = append(p.errs, newParseErr(p, t, msg, args...))
 }
 
-func expectErr(p *P, want token.T, got token.Type) {
-	err(p, want, "unexpected token, got=%q, want=%q", got, want.Type)
+func expectErr(p *P, got token.T, want token.Type) {
+	perr(p, got, "unexpected token, got=%q, want=%q", got.Type, want)
 }
 
 func parseFnErr(p *P, ty string, t token.T) {
-	err(p, t, "no %q function found for token %q", ty, t.Type)
+	perr(p, t, "no %q function found for token %q", ty, t.Type)
 }

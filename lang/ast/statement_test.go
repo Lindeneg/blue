@@ -9,27 +9,29 @@ import (
 func TestStatements(t *testing.T) {
 	expectedOutput := "let foo = bar;const foo = bar;" +
 		"{ const foo = bar; }" +
-		"return foo;foo"
+		"return foo;" +
+		"foo" +
+		"foobar = true;"
 	program := &Program{
 		Statements: []Statement{
-			&LetStatement{
+			&AssignStatement{
 				Token: token.T{Type: token.LET, Literal: "let"},
-				Name: &Identifier{
+				Left: &Identifier{
 					Token: token.T{Type: token.IDENTIFIER, Literal: "foo"},
 					Value: "foo",
 				},
-				Value: &Identifier{
+				Right: &Identifier{
 					Token: token.T{Type: token.IDENTIFIER, Literal: "bar"},
 					Value: "bar",
 				},
 			},
-			&ConstStatement{
+			&AssignStatement{
 				Token: token.T{Type: token.CONST, Literal: "const"},
-				Name: &Identifier{
+				Left: &Identifier{
 					Token: token.T{Type: token.IDENTIFIER, Literal: "foo"},
 					Value: "foo",
 				},
-				Value: &Identifier{
+				Right: &Identifier{
 					Token: token.T{Type: token.IDENTIFIER, Literal: "bar"},
 					Value: "bar",
 				},
@@ -37,13 +39,13 @@ func TestStatements(t *testing.T) {
 			&BlockStatement{
 				Token: token.T{Type: token.LBRACE, Literal: "{"},
 				Statements: []Statement{
-					&ConstStatement{
+					&AssignStatement{
 						Token: token.T{Type: token.CONST, Literal: "const"},
-						Name: &Identifier{
+						Left: &Identifier{
 							Token: token.T{Type: token.IDENTIFIER, Literal: "foo"},
 							Value: "foo",
 						},
-						Value: &Identifier{
+						Right: &Identifier{
 							Token: token.T{Type: token.IDENTIFIER, Literal: "bar"},
 							Value: "bar",
 						},
@@ -62,6 +64,17 @@ func TestStatements(t *testing.T) {
 				Expression: &Identifier{
 					Token: token.T{Type: token.IDENTIFIER, Literal: "foo"},
 					Value: "foo",
+				},
+			},
+			&AssignStatement{
+				Token: token.T{Type: token.IDENTIFIER, Literal: "foobar"},
+				Left: &Identifier{
+					Token: token.T{Type: token.IDENTIFIER, Literal: "foobar"},
+					Value: "foobar",
+				},
+				Right: &Boolean{
+					Token: token.T{Type: token.TRUE, Literal: "true"},
+					Value: true,
 				},
 			},
 		},

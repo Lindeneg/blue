@@ -107,7 +107,7 @@ func (ie *IfExpression) String() string {
 // ForExpression i.e for let i = range(arr) { }
 type ForExpression struct {
 	Token      token.T
-	Assignment *LetStatement
+	Assignment *AssignStatement
 	Body       *BlockStatement
 }
 

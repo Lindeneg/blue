@@ -23,10 +23,8 @@ func New(l *lexer.L, sourceName string) *P {
 		sourceName: sourceName,
 		errs:       make([]ParseErr, 0),
 	}
-
 	p.advance()
 	p.advance()
-
 	return p
 }
 
@@ -41,7 +39,6 @@ func (p *P) HasErrors() bool {
 func (p *P) ParseProgram() *ast.Program {
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
-
 	for p.cur.Type != token.EOF {
 		stmt := p.parseStatement()
 		if stmt != nil {
@@ -65,11 +62,11 @@ func (p *P) expect(got token.T, want token.Type) bool {
 	return true
 }
 
-func (p *P) expectCurrent(t token.Type) bool {
+func (p *P) expectCur(t token.Type) bool {
 	return p.expect(p.cur, t)
 }
 
-func (p *P) expectPeek(t token.Type) bool {
+func (p *P) expectNext(t token.Type) bool {
 	return p.expect(p.next, t)
 }
 
@@ -93,10 +90,10 @@ func (p *P) expectInfix() infixFn {
 
 func (p *P) parseStatement() ast.Statement {
 	switch p.cur.Type {
-	case token.LET:
-		return parseAssignment(p, &ast.LetStatement{Token: p.cur})
-	case token.CONST:
-		return parseAssignment(p, &ast.ConstStatement{Token: p.cur})
+	case token.LET, token.CONST:
+		return p.parseAssignment(&ast.AssignStatement{Token: p.cur}, false)
+	case token.IDENTIFIER:
+		return p.parseAssignment(&ast.AssignStatement{Token: p.cur}, true)
 	case token.RETURN:
 		return nil
 		//return p.parseReturnStatement()
@@ -106,7 +103,27 @@ func (p *P) parseStatement() ast.Statement {
 	}
 }
 
-func (p *P) parseExpression(pred pred) ast.Expression {
+func (p *P) parseAssignment(t *ast.AssignStatement, reassign bool) *ast.AssignStatement {
+	if !reassign && !p.expectNext(token.IDENTIFIER) {
+		return nil
+	}
+	if !reassign {
+		p.advance() // consume 'let' or 'const'
+	}
+	t.Left = &ast.Identifier{Token: p.cur, Value: p.cur.Literal}
+	p.advance() // consume 'identifier'
+	if !p.expectCur(token.ASSIGN) {
+		return nil
+	}
+	p.advance() // consume '='
+	t.Right = p.parseExpression(LOWEST)
+	if p.next.Type == token.SCOLON {
+		p.advance() // consume ';'
+	}
+	return t
+}
+
+func (p *P) parseExpression(pr pred) ast.Expression {
 	var (
 		prefix prefixFn
 		infix  infixFn
@@ -115,7 +132,7 @@ func (p *P) parseExpression(pred pred) ast.Expression {
 		return nil
 	}
 	leftExp := prefix(p)
-	for p.next.Type != token.SCOLON && pred.lt(p.next) {
+	for p.next.Type != token.SCOLON && pr.lt(p.next) {
 		if infix = p.expectInfix(); infix == nil {
 			return nil
 		}
@@ -123,21 +140,4 @@ func (p *P) parseExpression(pred pred) ast.Expression {
 		leftExp = infix(p, leftExp)
 	}
 	return leftExp
-}
-
-func parseAssignment[T ast.Assignable](p *P, t T) T {
-	if !p.expectPeek(token.IDENTIFIER) {
-		return t
-	}
-	p.advance() // consume 'let' or 'const'
-	t.SetLeft(&ast.Identifier{Token: p.cur, Value: p.cur.Literal})
-	if !p.expectPeek(token.ASSIGN) {
-		return t
-	}
-	p.advance() // consume '='
-	t.SetRight(p.parseExpression(LOWEST))
-	if p.next.Type == token.SCOLON {
-		p.advance() // consume ';'
-	}
-	return t
 }

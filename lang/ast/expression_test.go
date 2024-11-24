@@ -113,10 +113,10 @@ func TestExpressions(t *testing.T) {
 			&ExpressionStatement{
 				Expression: &ForExpression{
 					Token: token.T{Type: token.FOR, Literal: "for"},
-					Assignment: &LetStatement{
+					Assignment: &AssignStatement{
 						Token: token.T{Type: token.LET, Literal: "let"},
-						Name:  &Identifier{Value: "i"},
-						Value: &CallExpression{
+						Left:  &Identifier{Value: "i"},
+						Right: &CallExpression{
 							Function: &Function{
 								Name: &Identifier{Value: "range"},
 							},

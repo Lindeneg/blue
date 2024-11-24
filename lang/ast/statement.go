@@ -12,38 +12,27 @@ type Statement interface {
 	statement()
 }
 
-// LetStatement i.e let foo = 5;
-type LetStatement struct {
+// AssignStatement i.e let foo = 5, const foo = 5, foo = 5;
+type AssignStatement struct {
 	Token token.T
-	Name  *Identifier
-	Value Expression
+	Left  *Identifier
+	Right Expression
 }
 
-func (ls *LetStatement) statement()            {}
-func (ls *LetStatement) Literal() string       { return ls.Token.Literal }
-func (ls *LetStatement) Left() *Identifier     { return ls.Name }
-func (ls *LetStatement) Right() Expression     { return ls.Value }
-func (ls *LetStatement) SetLeft(i *Identifier) { ls.Name = i }
-func (ls *LetStatement) SetRight(e Expression) { ls.Value = e }
-func (ls *LetStatement) String() string {
-	return assignString(ls)
-}
-
-// ConstStatement i.e const foo = 5;
-type ConstStatement struct {
-	Token token.T
-	Name  *Identifier
-	Value Expression
-}
-
-func (cs *ConstStatement) statement()            {}
-func (cs *ConstStatement) Literal() string       { return cs.Token.Literal }
-func (cs *ConstStatement) Left() *Identifier     { return cs.Name }
-func (cs *ConstStatement) Right() Expression     { return cs.Value }
-func (cs *ConstStatement) SetLeft(i *Identifier) { cs.Name = i }
-func (cs *ConstStatement) SetRight(e Expression) { cs.Value = e }
-func (cs *ConstStatement) String() string {
-	return assignString(cs)
+func (as *AssignStatement) statement()      {}
+func (as *AssignStatement) Literal() string { return as.Token.Literal }
+func (as *AssignStatement) String() string {
+	var out bytes.Buffer
+	if as.Token.Type != token.IDENTIFIER {
+		out.WriteString(as.Literal() + " ")
+	}
+	out.WriteString(as.Left.String())
+	out.WriteString(" = ")
+	if as.Right != nil {
+		out.WriteString(as.Right.String())
+	}
+	out.WriteString(";")
+	return out.String()
 }
 
 // BlockStatement i.e { ...stuff }
@@ -98,24 +87,4 @@ func (es *ExpressionStatement) String() string {
 		return es.Expression.String()
 	}
 	return ""
-}
-
-type Assignable interface {
-	Statement
-	Left() *Identifier
-	Right() Expression
-	SetLeft(*Identifier)
-	SetRight(Expression)
-}
-
-func assignString(a Assignable) string {
-	var out bytes.Buffer
-	out.WriteString(a.Literal() + " ")
-	out.WriteString(a.Left().String())
-	out.WriteString(" = ")
-	if a.Right() != nil {
-		out.WriteString(a.Right().String())
-	}
-	out.WriteString(";")
-	return out.String()
 }
