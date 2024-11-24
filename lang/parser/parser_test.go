@@ -25,9 +25,7 @@ func TestAssignmentStatements(t *testing.T) {
 	}
 
 	for i, tt := range tests {
-		p := New(lexer.FromString(tt.input), fmt.Sprintf("test%d", i))
-		program := p.ParseProgram()
-		checkParserErrors(t, p)
+		program := newProgram(t, tt.input, fmt.Sprintf("assignment-statement-%d", i))
 		if len(program.Statements) != 1 {
 			t.Fatalf("program.Statements does not contain 1 statements. got=%d",
 				len(program.Statements))
@@ -37,6 +35,78 @@ func TestAssignmentStatements(t *testing.T) {
 			t.Fatalf("testAssignStatement failed for test %d: %q", i, stmt)
 		}
 	}
+}
+
+func TestIdentifierExpression(t *testing.T) {
+	input := "foobar;"
+	program := newProgram(t, input, "identifier.expression")
+	if len(program.Statements) != 1 {
+		t.Fatalf("program has not enough statements. got=%d",
+			len(program.Statements))
+	}
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T",
+			program.Statements[0])
+	}
+	ident, ok := stmt.Expression.(*ast.Identifier)
+	if !ok {
+		t.Fatalf("exp not *ast.Identifier. got=%T", stmt.Expression)
+	}
+	if ident.Value != "foobar" {
+		t.Errorf("ident.Value not %s. got=%s", "foobar", ident.Value)
+	}
+	if ident.Literal() != "foobar" {
+		t.Errorf("ident.TokenLiteral not %s. got=%s", "foobar",
+			ident.Literal())
+	}
+}
+
+func TestStringLiteralExpression(t *testing.T) {
+	input := `"hello world";`
+	program := newProgram(t, input, "string.literal.expression")
+	stmt := program.Statements[0].(*ast.ExpressionStatement)
+	literal, ok := stmt.Expression.(*ast.String)
+	if !ok {
+		t.Fatalf("exp not *ast.String. got=%T", stmt.Expression)
+	}
+	if literal.Value != "hello world" {
+		t.Errorf("literal.Value not %q. got=%q", "hello world", literal.Value)
+	}
+}
+
+func TestIntegerLiteralExpression(t *testing.T) {
+	input := "5;"
+	program := newProgram(t, input, "integer.literal.expression")
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program has not enough statements. got=%d",
+			len(program.Statements))
+	}
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T",
+			program.Statements[0])
+	}
+
+	testNumberLiteral(t, stmt.Expression, int64(5))
+}
+
+func TestFloatLiteralExpression(t *testing.T) {
+	input := "5.62;"
+	program := newProgram(t, input, "float.literal.expression")
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program has not enough statements. got=%d",
+			len(program.Statements))
+	}
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T",
+			program.Statements[0])
+	}
+
+	testNumberLiteral(t, stmt.Expression, float64(5.62))
 }
 
 func testAssignStatement(t *testing.T, s ast.Statement, identifier string, value any) bool {
@@ -164,4 +234,13 @@ func checkParserErrors(t *testing.T, p *P) {
 		t.Error(msg.Msg)
 	}
 	t.FailNow()
+}
+
+func newProgram(t *testing.T, input, name string) *ast.Program {
+	t.Helper()
+	l := lexer.FromString(input)
+	p := New(l, name)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+	return program
 }
