@@ -23,6 +23,7 @@ const (
 	COLON                  // :
 	SCOLON                 // ;
 	COMMA                  // ,
+	PIPE                   // |
 	LT                     // <
 	GT                     // >
 	EQ                     // ==
@@ -66,6 +67,7 @@ var name = map[Type]string{
 	COLON:      ":",
 	SCOLON:     ";",
 	COMMA:      ",",
+	PIPE:       "|",
 	LT:         "<",
 	GT:         ">",
 	EQ:         "==",

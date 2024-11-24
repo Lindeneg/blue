@@ -14,7 +14,7 @@ func TestExpressions(t *testing.T) {
 		"else { return 4; }" +
 		"for let i = range(arr);{ (arr[i]) }" +
 		`["foo", "bar"]` +
-		`{"foo":"bar", "baz":"qux"}`
+		`|"foo":"bar", "baz":"qux"|`
 	program := &Program{
 		Statements: []Statement{
 			&ExpressionStatement{

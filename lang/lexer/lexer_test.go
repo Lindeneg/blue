@@ -32,7 +32,7 @@ for let i = range(arr) {
     arr[i];
 }
 
-const obj = {"foo": "bar", "baz": 1};
+const obj = |"foo": "bar", "baz": 1|;
 
 !-/*1;
 10 != 9;
@@ -169,7 +169,7 @@ null
 		{token.CONST, "const"},
 		{token.IDENTIFIER, "obj"},
 		{token.ASSIGN, "="},
-		{token.LBRACE, "{"},
+		{token.PIPE, "|"},
 		{token.STRING, "foo"},
 		{token.COLON, ":"},
 		{token.STRING, "bar"},
@@ -177,7 +177,7 @@ null
 		{token.STRING, "baz"},
 		{token.COLON, ":"},
 		{token.INT, "1"},
-		{token.RBRACE, "}"},
+		{token.PIPE, "|"},
 		{token.SCOLON, ";"},
 
 		{token.BANG, "!"},

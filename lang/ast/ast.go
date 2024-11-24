@@ -109,7 +109,7 @@ func (fl *Function) String() string {
 	return out.String()
 }
 
-// Dict i.e {"foo": "bar", "baz": 1}
+// Dict i.e |"foo": "bar", "baz": 1|
 type Dict struct {
 	Token token.T
 	Pairs map[Expression]Expression
@@ -123,9 +123,9 @@ func (d *Dict) String() string {
 	for key, value := range d.Pairs {
 		pairs = append(pairs, key.String()+":"+value.String())
 	}
-	out.WriteString("{")
+	out.WriteString("|")
 	out.WriteString(strings.Join(pairs, ", "))
-	out.WriteString("}")
+	out.WriteString("|")
 	return out.String()
 }
 
